@@ -1,46 +1,37 @@
 package com.gopivotal.cf.samples.s3.repository;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-import java.io.File;
 import java.net.URL;
+import java.util.Date;
 
-@Entity
 public class S3File {
 
-    @Id
-    private String id;
-    private String bucket;
+    private String key;
     private String name;
+    private Date date;
     private URL url;
-    @Transient
-    private File file;
 
-    public S3File() {
+    S3File(String key) {
+        this.key = key;
     }
 
-    S3File(String id, String bucket, String name, File file) {
-        this.id = id;
-        this.bucket = bucket;
+    public String getKey() {
+        return key;
+    }
+
+    public void setName(String name) {
         this.name = name;
-        this.file = file;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getBucket() {
-        return bucket;
     }
 
     public String getName() {
         return name;
     }
 
-    public File getFile() {
-        return file;
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Date getDate() {
+        return date;
     }
 
     public void setUrl(URL url) {
@@ -50,9 +41,4 @@ public class S3File {
     public URL getUrl() {
         return url;
     }
-
-    public String getActualFileName() {
-        return id + "/" + name;
-    }
-
 }

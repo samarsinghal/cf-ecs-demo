@@ -1,6 +1,7 @@
 package com.gopivotal.cf.samples.s3.web;
 
-import com.gopivotal.cf.samples.s3.data.S3FileRepository;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.gopivotal.cf.samples.s3.repository.S3;
 import com.gopivotal.cf.samples.s3.repository.S3File;
 import org.apache.commons.logging.Log;
@@ -20,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -28,38 +31,25 @@ public class S3Controller {
     Log log = LogFactory.getLog(S3Controller.class);
 
     @Autowired
-    S3FileRepository repository;
-
-    @Autowired
     S3 s3;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(Model model) {
         model.addAttribute("message", "Hello Boot!");
-
-        Iterable<S3File> images = repository.findAll();
+        Iterable<S3File> images = s3.list();
         model.addAttribute("images", images);
-
         return "index";
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public String deleteFile(@PathVariable String id) {
-
-        S3File s3File = repository.findOne(id);
-
-        s3.delete(s3File);
-        log.info(s3File.getActualFileName() + " deleted from S3 bucket.");
-        repository.delete(s3File);
-        log.info(s3File.getId() + " deleted from MySQL.");
-
+    @RequestMapping(value = "/delete/{key:.+}", method = RequestMethod.GET)
+    public String deleteFile(@PathVariable String key) {
+        s3.delete(key);
+        log.info(String.format("Image '%s' deleted from S3 bucket.", key));
         return "redirect:/";
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public String handleFileUpload(@RequestParam("file") MultipartFile file) {
-
-        String id = UUID.randomUUID().toString();
         File uploadedFile = new File(file.getOriginalFilename());
 
         try {
@@ -71,20 +61,15 @@ public class S3Controller {
             throw new RuntimeException("Failed to upload file.", e);
         }
 
-        S3File s3File = s3.createS3FileObject(id, file.getOriginalFilename(), uploadedFile);
-
         try {
-            URL url = s3.put(s3File);
-            s3File.setUrl(url);
-            log.info(s3File.getName() + " put to S3.");
-            repository.save(s3File);
-            log.info(s3File.getName() + " record saved to MySQL.");
+            s3.put(file.getOriginalFilename(), uploadedFile);
+            log.info(file.getOriginalFilename() + " put to S3.");
         } catch (MalformedURLException e){
             throw new RuntimeException("Failed saving file to backend.", e);
         }
 
         uploadedFile.delete();
-        log.info(s3File.getFile().getAbsolutePath() + " temporary file is deleted.");
+        log.info(uploadedFile.getAbsolutePath() + " temporary file is deleted.");
 
         return "redirect:/";
     }

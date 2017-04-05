@@ -17,30 +17,16 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-
-import javax.sql.DataSource;
 
 @Configuration
 @Profile("default")
-@EnableConfigurationProperties({MySqlProperties.class, S3Properties.class})
+@EnableConfigurationProperties({S3Properties.class})
 public class LocalConfig {
 
     Log log = LogFactory.getLog(LocalConfig.class);
-    @Autowired
-    private MySqlProperties mySqlProperties;
+
     @Autowired
     private S3Properties s3Properties;
-
-    @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(mySqlProperties.getDriver());
-        dataSource.setUrl(mySqlProperties.getUrl());
-        dataSource.setUsername(mySqlProperties.getUsername());
-        dataSource.setPassword(mySqlProperties.getPassword());
-        return dataSource;
-    }
 
     @Bean
     public S3 s3() {

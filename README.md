@@ -15,11 +15,6 @@ s3:
   endpoint: s3-compatible-endpoint (optional)
   base-url: public-base-url-for-uploaded-objects (optional)
   path-style-access: true-or-false (optional, default: false)
-mysql:
-  driver: com.mysql.jdbc.Driver
-  url: jdbc:mysql://localhost:3306/mysql_db
-  username: mysql_db
-  password: mysql_pw</code></pre>
 ```
 
 * Assemble the app.
@@ -40,12 +35,6 @@ $ java -jar build/libs/cf-s3-demo.jar
 
 Assuming you already have an account at http://run.pivotal.io:
 
-* Create a ClearDB service.
-
-```
-$ cf create-service cleardb spark mysql-service
-```
-
 * Create a user-provided service, making sure its name begins with "s3". It should have the following credentials (assign values appropriate for your environment):
     * `accessKey`
     * `secretKey`
@@ -63,7 +52,7 @@ $ cf create-user-provided-service s3-service -p '{"accessKey":"1234","secretKey"
 $ ./gradlew assemble
 ```
 
-* Push it to Pivotal Cloud Foundry. It will fail because services are not bound yet.
+* Push it to Pivotal Cloud Foundry. It will fail because the service is not bound yet.
 
 ```
 $ cf push cf-s3-123 -p build/libs/cf-s3-demo.jar
@@ -72,7 +61,6 @@ $ cf push cf-s3-123 -p build/libs/cf-s3-demo.jar
 * Bind services to the app.
 
 ```
-$ cf bind-service cf-s3-123 mysql-service
 $ cf bind-service cf-s3-123 s3-service
 ```
 

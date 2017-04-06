@@ -91,7 +91,7 @@ s3:
 ```yaml
 s3:
   endpoint: https://object.ecstestdrive.com
-  base-url: http://131296597082943894.public.ecstestdrive.com
+  base-url: http://<Your-Namespace>.public.ecstestdrive.com
   accessKey: <Your access key>
   secretKey: <Your secret key>
   bucket: <Name of the bucket>

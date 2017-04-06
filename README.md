@@ -1,6 +1,6 @@
-# CF S3 Demo
+# Cloud Foundry S3 Java Demo app
 
-This is a simple example of using Amazon S3 (or a different S3-compatible service) for asset storage. It is an image catalog to which you can upload images and see them on the main page.
+This is a simple example of using Amazon S3 (or another S3-compatible service) for asset storage. It uses the [AWS SDK for Java](https://aws.amazon.com/sdk-for-java/). The app is an image catalog to which you can upload images and see them on the main page.
 
 ## Running Locally
 
@@ -71,3 +71,28 @@ $ cf restage cf-s3-123
 ```
 
 * Browse to the given URL (e.g. `http://cf-s3-123.cfapps.io`).
+
+## Configuration examples
+
+### Amazon S3
+
+```yaml
+s3:
+  accessKey: <Your AWS access key>
+  secretKey: <Your AWS secret key>
+  region: <AWS region: eu-west-1, us-west-2, etc...> 
+  bucket: <Name of the bucket>
+``` 
+
+### Dell EMC ECS
+
+[ECS Test Drive](https://portal.ecstestdrive.com/):
+
+```yaml
+s3:
+  endpoint: https://object.ecstestdrive.com
+  base-url: http://131296597082943894.public.ecstestdrive.com
+  accessKey: <Your access key>
+  secretKey: <Your secret key>
+  bucket: <Name of the bucket>
+```

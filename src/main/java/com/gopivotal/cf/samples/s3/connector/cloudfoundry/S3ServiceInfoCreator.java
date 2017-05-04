@@ -23,8 +23,9 @@ public class S3ServiceInfoCreator extends CloudFoundryServiceInfoCreator<S3Servi
         String endpoint = (String) credentials.get("endpoint");
         Boolean pathStyleAccess = Boolean.valueOf((String) credentials.getOrDefault("pathStyleAccess", "false"));
         String baseUrl = (String) credentials.get("baseUrl");
+        Boolean usePresignedUrls = Boolean.valueOf((String) credentials.getOrDefault("usePresignedUrls", "false"));
 
-        return new S3ServiceInfo(id, accessKey, secretKey, bucket, region, endpoint, pathStyleAccess, baseUrl);
+        return new S3ServiceInfo(id, accessKey, secretKey, bucket, region, endpoint, pathStyleAccess, baseUrl, usePresignedUrls);
     }
 
     @Override

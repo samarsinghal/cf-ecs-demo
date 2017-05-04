@@ -8,13 +8,14 @@ This is a simple example of using Amazon S3 (or another S3-compatible service) f
 
 ```yaml
 s3:
-  aws_access_key: your-aws-access-key
-  aws_secret_key: your-aws-secret-key
+  access-key: your-aws-access-key
+  secret-key: your-aws-secret-key
   region: the-region-where-your-buckets-are
   bucket: the-bucket-name-you-want-to-use
   endpoint: s3-compatible-endpoint (optional)
   base-url: public-base-url-for-uploaded-objects (optional)
   path-style-access: true-or-false (optional, default: false)
+  use-presigned-urls: true-or-false (optional, default: false, true if endpoint is an IP address)
 ```
 
 * Assemble the app.
@@ -43,6 +44,7 @@ Assuming you already have an account at http://run.pivotal.io:
     * `endpoint` (optional)
     * `baseUrl` (optional)
     * `pathStyleAccess` (optional, default: false)
+    * `usePresignedUrls` (optional, default: false, true if the endpoint is an IP address)
 ```
 $ cf create-user-provided-service s3-service -p '{"accessKey":"1234","secretKey":"5678","region":"us-west-1","bucket":"cf-s3-bucket"}'
 ```
@@ -80,9 +82,9 @@ $ cf restage cf-s3-123
 s3:
   accessKey: <Your AWS access key>
   secretKey: <Your AWS secret key>
-  region: <AWS region: eu-west-1, us-west-2, etc...> 
+  region: <AWS region: eu-west-1, us-west-2, etc...>
   bucket: <Name of the bucket>
-``` 
+```
 
 ### Dell EMC ECS
 
@@ -92,6 +94,16 @@ s3:
 s3:
   endpoint: https://object.ecstestdrive.com
   base-url: http://<Your-Namespace>.public.ecstestdrive.com
+  accessKey: <Your access key>
+  secretKey: <Your secret key>
+  bucket: <Name of the bucket>
+```
+
+[ECS Community Edition](https://github.com/EMCECS/ECS-CommunityEdition) and SKU:
+
+```yaml
+s3:
+  endpoint: http://10.1.2.3:9020
   accessKey: <Your access key>
   secretKey: <Your secret key>
   bucket: <Name of the bucket>

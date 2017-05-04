@@ -1,7 +1,16 @@
 package com.gopivotal.cf.samples.s3.repository;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
+import com.gopivotal.cf.samples.s3.connector.cloudfoundry.S3ServiceInfo;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -13,14 +22,54 @@ import java.util.regex.Pattern;
 
 public class S3 {
 
+    Log log = LogFactory.getLog(S3.class);
+
     private AmazonS3 amazonS3;
     private String bucket;
     private String baseUrl;
+    private Boolean usePresignedUrls;
 
-    public S3(AmazonS3 amazonS3, String bucket, String baseUrl) {
+    public S3(S3ServiceInfo serviceInfo) {
+
+        AWSCredentials awsCredentials = new BasicAWSCredentials(serviceInfo.getAccessKey(), serviceInfo.getSecretKey());
+
+        AmazonS3ClientBuilder builder = AmazonS3ClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+                .withPathStyleAccessEnabled(serviceInfo.getPathStyleAccess());
+
+        if (serviceInfo.getEndpoint() != null) {
+            // if a custom endpoint is set, we will ignore the region
+            builder.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
+                    serviceInfo.getEndpoint(), "Standard"
+            ));
+        } else {
+            builder.withRegion(serviceInfo.getRegion());
+        }
+
+        AmazonS3 amazonS3 = builder.build();
+
+        try {
+            amazonS3.createBucket(
+                    new CreateBucketRequest(serviceInfo.getBucket()).withCannedAcl(CannedAccessControlList.PublicRead)
+            );
+        } catch (AmazonServiceException e) {
+            if (!e.getErrorCode().equals("BucketAlreadyOwnedByYou")) {
+                throw e;
+            }
+        }
+        log.info("Using S3 Bucket: " + serviceInfo.getBucket());
+
         this.amazonS3 = amazonS3;
-        this.bucket = bucket;
-        this.baseUrl = baseUrl;
+        this.bucket = serviceInfo.getBucket();
+        this.baseUrl = serviceInfo.getBaseUrl();
+        this.usePresignedUrls = serviceInfo.getUsePresignedUrls();
+
+        Pattern r = Pattern.compile("^http(s)*://(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])");
+        Matcher m = r.matcher(serviceInfo.getEndpoint());
+        if (m.find( )) {
+            log.info("Endpoint host is an IP, using presigned URLs");
+            this.usePresignedUrls = true;
+        }
     }
 
     public void put(String filename, File content) throws MalformedURLException {
@@ -51,15 +100,30 @@ public class S3 {
 
     private URL getUrl(String objectName) {
         URL url;
-        if (baseUrl == null) {
-            url = amazonS3.getUrl(bucket, objectName);
+        
+        if (usePresignedUrls) {
+          java.util.Date expiration = new java.util.Date();
+          long msec = expiration.getTime();
+          msec += 1000 * 60 * 60 * 24 * 7; // 7 days.
+          expiration.setTime(msec);
+
+          GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                        new GeneratePresignedUrlRequest(bucket, objectName);
+          generatePresignedUrlRequest.setExpiration(expiration);
+
+          url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
         } else {
-            try {
-                url = new URL(baseUrl + "/" + bucket + "/" + objectName);
-            } catch (MalformedURLException e) {
-                throw new RuntimeException("Error generating URL");
-            }
+          if (baseUrl == null) {
+              url = amazonS3.getUrl(bucket, objectName);
+          } else {
+              try {
+                  url = new URL(baseUrl + "/" + bucket + "/" + objectName);
+              } catch (MalformedURLException e) {
+                  throw new RuntimeException("Error generating URL");
+              }
+          }
         }
+
         return url;
     }
 

@@ -11,9 +11,10 @@ public class S3ServiceInfo extends BaseServiceInfo {
     private String endpoint;
     private Boolean pathStyleAccess;
     private String baseUrl;
+    private Boolean usePresignedUrls;
 
     public S3ServiceInfo(String id, String accessKey, String secretKey, String bucket, String region,
-                         String endpoint, Boolean pathStyleAccess, String baseUrl) {
+                         String endpoint, Boolean pathStyleAccess, String baseUrl, Boolean usePresignedUrls) {
         super(id);
         this.accessKey = accessKey;
         this.secretKey = secretKey;
@@ -22,6 +23,7 @@ public class S3ServiceInfo extends BaseServiceInfo {
         this.endpoint = endpoint;
         this.pathStyleAccess = pathStyleAccess;
         this.baseUrl = baseUrl;
+        this.usePresignedUrls = usePresignedUrls;
     }
 
     @ServiceProperty
@@ -57,5 +59,10 @@ public class S3ServiceInfo extends BaseServiceInfo {
     @ServiceProperty
     public String getBaseUrl() {
         return baseUrl;
+    }
+
+    @ServiceProperty
+    public Boolean getUsePresignedUrls() {
+        return usePresignedUrls;
     }
 }

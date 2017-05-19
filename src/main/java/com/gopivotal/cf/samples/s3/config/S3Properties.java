@@ -12,6 +12,7 @@ public class S3Properties {
     private String endpoint;
     private Boolean pathStyleAccess = false;
     private String baseUrl;
+    private Boolean usePresignedUrls = false;
 
     public String getAccessKey() {
         return accessKey;
@@ -67,5 +68,13 @@ public class S3Properties {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    public Boolean getUsePresignedUrls() {
+        return usePresignedUrls;
+    }
+
+    public void setUsePresignedUrls(Boolean usePresignedUrls) {
+        this.usePresignedUrls = usePresignedUrls;
     }
 }

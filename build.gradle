@@ -12,26 +12,24 @@ ext {
     bootVersion = "1.5.2.RELEASE"
 }
 
-//apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
 repositories {
     mavenCentral()
-    //mavenLocal()
+}
 
-    //maven { url "http://repo.springsource.org/snapshot" }
-    //maven { url "http://repo.springsource.org/milestone" }
+dependencyManagement {
+    imports {
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.228'
+    }
 }
 
 dependencies {
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-core', version: '1.2.3.RELEASE'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-spring-service-connector', version: '1.2.3.RELEASE'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-cloudfoundry-connector', version: '1.2.3.RELEASE'
     compile "org.springframework.boot:spring-boot-starter-actuator:${bootVersion}"
     compile "org.springframework.boot:spring-boot-starter-tomcat:${bootVersion}"
     compile "org.springframework.boot:spring-boot-starter-web:${bootVersion}"
     compile "org.springframework.boot:spring-boot-starter-thymeleaf:${bootVersion}"
-    compile 'com.amazonaws:aws-java-sdk:1.11.113'
+    compile "com.amazonaws:aws-java-sdk-s3"
     runtime "org.yaml:snakeyaml:1.18"
     compile group: 'net.minidev', name: 'json-smart', version: '2.3'
 }
@@ -40,4 +38,3 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = '3.4'
 }
-

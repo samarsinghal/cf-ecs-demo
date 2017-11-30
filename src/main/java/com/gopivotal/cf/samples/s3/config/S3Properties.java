@@ -8,11 +8,7 @@ public class S3Properties {
     private String accessKey;
     private String secretKey;
     private String bucket;
-    private String region = "us-west-1";
     private String endpoint;
-    private Boolean pathStyleAccess = false;
-    private String baseUrl;
-    private Boolean usePresignedUrls = false;
 
     public String getAccessKey() {
         return accessKey;
@@ -38,43 +34,11 @@ public class S3Properties {
         this.bucket = bucket;
     }
 
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
     public String getEndpoint() {
         return endpoint;
     }
 
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
-    }
-
-    public Boolean getPathStyleAccess() {
-        return pathStyleAccess;
-    }
-
-    public void setPathStyleAccess(Boolean pathStyleAccess) {
-        this.pathStyleAccess = pathStyleAccess;
-    }
-
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    public Boolean getUsePresignedUrls() {
-        return usePresignedUrls;
-    }
-
-    public void setUsePresignedUrls(Boolean usePresignedUrls) {
-        this.usePresignedUrls = usePresignedUrls;
     }
 }

@@ -1,4 +1,4 @@
-package com.gopivotal.cf.samples.s3.repository;
+package com.gopivotal.cf.samples.s3.web;
 
 import java.net.URL;
 import java.util.Date;

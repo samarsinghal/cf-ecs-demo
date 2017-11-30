@@ -1,6 +1,5 @@
 package com.gopivotal.cf.samples.s3.config;
 
-import com.gopivotal.cf.samples.s3.repository.S3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -16,8 +15,8 @@ public class LocalConfig {
     S3Properties s3Properties;
 
     @Bean
-    public S3 s3() {
-        return new S3(s3Properties);
+    public S3Connector s3() {
+        return new S3Connector(s3Properties);
     }
 
 }

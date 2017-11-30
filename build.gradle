@@ -12,26 +12,18 @@ ext {
     bootVersion = "1.5.2.RELEASE"
 }
 
-//apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
 repositories {
     mavenCentral()
-    //mavenLocal()
-
-    //maven { url "http://repo.springsource.org/snapshot" }
-    //maven { url "http://repo.springsource.org/milestone" }
 }
 
 dependencies {
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-core', version: '1.2.3.RELEASE'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-spring-service-connector', version: '1.2.3.RELEASE'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-cloudfoundry-connector', version: '1.2.3.RELEASE'
+    compile "com.emc.ecs:spring-cloud-ecs-connector:1.0.0"
     compile "org.springframework.boot:spring-boot-starter-actuator:${bootVersion}"
     compile "org.springframework.boot:spring-boot-starter-tomcat:${bootVersion}"
     compile "org.springframework.boot:spring-boot-starter-web:${bootVersion}"
     compile "org.springframework.boot:spring-boot-starter-thymeleaf:${bootVersion}"
-    compile 'com.amazonaws:aws-java-sdk:1.11.113'
     runtime "org.yaml:snakeyaml:1.18"
     compile group: 'net.minidev', name: 'json-smart', version: '2.3'
 }

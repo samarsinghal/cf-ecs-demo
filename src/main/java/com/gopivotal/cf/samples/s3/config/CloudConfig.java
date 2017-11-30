@@ -1,6 +1,6 @@
 package com.gopivotal.cf.samples.s3.config;
 
-import com.gopivotal.cf.samples.s3.repository.S3;
+import com.emc.ecs.connector.spring.S3Connector;
 import org.springframework.cloud.config.java.AbstractCloudConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Profile;
 public class CloudConfig extends AbstractCloudConfig {
 
     @Bean
-    public S3 s3() {
-        return connectionFactory().service(S3.class);
+    public S3Connector s3() {
+        return connectionFactory().service(S3Connector.class);
     }
 
 }

@@ -34,19 +34,12 @@ $ java -jar build/libs/cf-s3-demo.jar
 
 ## Running on Cloud Foundry
 
-Assuming you already have an account at http://run.pivotal.io:
+Assuming you already have the [ECS Cloud Foundry Service Broker](http://github.com/codedellemc/ecs-cf-service-broker/) or [ECS Broker PCF Tile](https://network.pivotal.io/products/ecs-service-broker/) deployed to your Cloud Foundry instance:
 
-* Create a user-provided service, making sure its name begins with "s3". It should have the following credentials (assign values appropriate for your environment):
-    * `accessKey`
-    * `secretKey`
-    * `region`
-    * `bucket`
-    * `endpoint` (optional)
-    * `baseUrl` (optional)
-    * `pathStyleAccess` (optional, default: false)
-    * `usePresignedUrls` (optional, default: false, true if the endpoint is an IP address)
+* Create a ecs bucket service from the marketplatce:
+
 ```
-$ cf create-user-provided-service s3-service -p '{"accessKey":"1234","secretKey":"5678","region":"us-west-1","bucket":"cf-s3-bucket"}'
+$ cf create-service ecs-bucket demo-bucket 5gb'
 ```
 
 * Compile the app.
@@ -54,16 +47,16 @@ $ cf create-user-provided-service s3-service -p '{"accessKey":"1234","secretKey"
 $ ./gradlew assemble
 ```
 
-* Push it to Pivotal Cloud Foundry. It will fail because the service is not bound yet.
+* Push it to Pivotal Cloud Foundry. We pass `--no-start` since otherwise the startup would faile, with the service not having been bound yet.
 
 ```
-$ cf push cf-s3-123 -p build/libs/cf-s3-demo.jar
+$ cf push cf-s3-123 --no-start -p build/libs/cf-s3-demo.jar
 ```
 
 * Bind services to the app.
 
 ```
-$ cf bind-service cf-s3-123 s3-service
+$ cf bind-service cf-s3-123 demo-bucket
 ```
 
 * Restage the app.
@@ -73,38 +66,3 @@ $ cf restage cf-s3-123
 ```
 
 * Browse to the given URL (e.g. `http://cf-s3-123.cfapps.io`).
-
-## Configuration examples
-
-### Amazon S3
-
-```yaml
-s3:
-  accessKey: <Your AWS access key>
-  secretKey: <Your AWS secret key>
-  region: <AWS region: eu-west-1, us-west-2, etc...>
-  bucket: <Name of the bucket>
-```
-
-### Dell EMC ECS
-
-[ECS Test Drive](https://portal.ecstestdrive.com/):
-
-```yaml
-s3:
-  endpoint: https://object.ecstestdrive.com
-  base-url: http://<Your-Namespace>.public.ecstestdrive.com
-  accessKey: <Your access key>
-  secretKey: <Your secret key>
-  bucket: <Name of the bucket>
-```
-
-[ECS Community Edition](https://github.com/EMCECS/ECS-CommunityEdition) and SKU:
-
-```yaml
-s3:
-  endpoint: http://10.1.2.3:9020
-  accessKey: <Your access key>
-  secretKey: <Your secret key>
-  bucket: <Name of the bucket>
-```

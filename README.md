@@ -39,7 +39,7 @@ Assuming you already have the [ECS Cloud Foundry Service Broker](http://github.c
 * Create a ecs bucket service from the marketplatce:
 
 ```
-$ cf create-service ecs-bucket demo-bucket 5gb'
+$ cf create-service ecs-bucket demo-bucket 5gb
 ```
 
 * Compile the app.

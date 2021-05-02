@@ -1,35 +1,27 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
-    }
+plugins {
+	id 'org.springframework.boot' version '2.3.10.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
 }
 
-ext {
-    bootVersion = "1.5.2.RELEASE"
-}
-
-apply plugin: 'org.springframework.boot'
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '8'
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-    compile "com.emc.ecs:spring-cloud-ecs-connector:1.0.0"
-    compile "org.springframework.boot:spring-boot-starter-actuator:${bootVersion}"
-    compile "org.springframework.boot:spring-boot-starter-tomcat:${bootVersion}"
-    compile "org.springframework.boot:spring-boot-starter-web:${bootVersion}"
-    compile "org.springframework.boot:spring-boot-starter-thymeleaf:${bootVersion}"
-    runtime "org.yaml:snakeyaml:1.18"
-    compile group: 'net.minidev', name: 'json-smart', version: '2.3'
+	compile 'com.emc.ecs:spring-cloud-ecs-connector:1.0.0'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
 }
 
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.4'
+test {
+	useJUnitPlatform()
 }
-
